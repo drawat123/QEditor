@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>TextAreaItem.qml</file>
+        <file>TabButtonItem.qml</file>
+    </qresource>
+</RCC>
