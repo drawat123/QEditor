@@ -1,7 +1,7 @@
 # QEditor
 A simple text editor.
 
-![qE](https://github.com/drawat123/QEditor/assets/21956879/c1613a95-2590-49b0-a0f9-70e1813f6123)
+![s1](https://github.com/drawat123/QEditor/assets/21956879/af2071b1-13af-4532-b66b-0094c82b7666)
 
 ## Development
 
