@@ -87,8 +87,10 @@ ApplicationWindow {
 
         if (tabBar.count == 0)
             Qt.quit()
-        else
+        else {
+            getTabItem(tabBar.count - 1).newTabButton.visible = true
             getTextAreaItem(tabBar.currentIndex).textArea.forceActiveFocus()
+        }
 
         textAreaItemIndexes.shift()
         closeTabs()
@@ -148,7 +150,7 @@ ApplicationWindow {
         let searchText = searchItem.matchCase ? searchField.text : searchField.text.toLowerCase()
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
-        if (searchText !== "" && (textArea.selectedText === searchText
+        if (searchText !== "" && (searchText === selText
                                   || findNext())) {
             textArea.text = textArea.text.substring(
                         0,
@@ -163,11 +165,10 @@ ApplicationWindow {
         let searchText = searchItem.matchCase ? searchField.text : searchField.text.toLowerCase()
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
-        if (searchText !== "" && (textArea.selectedText === searchText
+        if (searchText !== "" && (searchText === selText
                                   || findNext(false))) {
-            textArea.text = textArea.text.replace(new RegExp(searchField.text,
-                                                             "g"),
-                                                  replaceField.text)
+            textArea.text = searchItem.matchCase ? textArea.text.replace(new RegExp(searchText, "g"), replaceField.text) :
+                                                   textArea.text.replace(new RegExp(searchText, "gi"), replaceField.text)
         }
     }
 
@@ -187,6 +188,7 @@ ApplicationWindow {
             onAboutToShow: menuItemAboutToShow()
             onOpened: menuItemOpened()
             Action {
+                id: newTabAction
                 text: actionText("New Tab", "Ctrl+N")
                 shortcut: "Ctrl+N"
                 onTriggered: {
@@ -212,7 +214,10 @@ ApplicationWindow {
                         return
                     }
 
+                    getTabItem(tabBar.count - 2).newTabButton.visible = false
                     tabBar.setCurrentIndex(tabBar.count - 1)
+                    getTabItem(tabBar.count - 1).newTabButton.visible = true
+
                     getTextAreaItem(
                                 tabBar.currentIndex).textArea.forceActiveFocus()
                 }
@@ -378,7 +383,7 @@ ApplicationWindow {
                 onTriggered: {
                     if (getTextAreaItem(
                                 tabBar.currentIndex).textArea.text.length) {
-                        findAndReplacePopup.height = searchItem.height
+                        findAndReplacePopup.height = findAndReplacePopup.originalHeight / 2
                         replaceItem.visible = false
                         findAndReplacePopup.open()
                     }
@@ -390,7 +395,7 @@ ApplicationWindow {
                 onTriggered: {
                     if (getTextAreaItem(
                                 tabBar.currentIndex).textArea.text.length) {
-                        findAndReplacePopup.height = searchItem.height * 2
+                        findAndReplacePopup.height = findAndReplacePopup.originalHeight
                         replaceItem.visible = true
                         findAndReplacePopup.open()
                     }
@@ -501,9 +506,10 @@ ApplicationWindow {
         id: findAndReplacePopup
         x: parent.width / 2 - width / 2
         width: 600
-        height: searchItem * 2
+        height: 80
         modal: true
         focus: true
+        property int originalHeight: 80
         contentItem: Rectangle {
             anchors.fill: parent
             radius: 5
@@ -512,7 +518,7 @@ ApplicationWindow {
             Item {
                 id: searchItem
                 width: parent.width
-                height: 40
+                height: findAndReplacePopup.originalHeight / 2
                 property bool matchCase: false
                 TextField {
                     id: searchField
