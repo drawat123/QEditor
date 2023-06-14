@@ -150,8 +150,7 @@ ApplicationWindow {
         let searchText = searchItem.matchCase ? searchField.text : searchField.text.toLowerCase()
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
-        if (searchText !== "" && (searchText === selText
-                                  || findNext())) {
+        if (searchText !== "" && (searchText === selText || findNext())) {
             textArea.text = textArea.text.substring(
                         0,
                         textArea.selectionStart) + replaceField.text + textArea.text.substring(
@@ -165,10 +164,14 @@ ApplicationWindow {
         let searchText = searchItem.matchCase ? searchField.text : searchField.text.toLowerCase()
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
-        if (searchText !== "" && (searchText === selText
-                                  || findNext(false))) {
-            textArea.text = searchItem.matchCase ? textArea.text.replace(new RegExp(searchText, "g"), replaceField.text) :
-                                                   textArea.text.replace(new RegExp(searchText, "gi"), replaceField.text)
+        if (searchText !== "" && (searchText === selText || findNext(false))) {
+            textArea.text = searchItem.matchCase ? textArea.text.replace(
+                                                       new RegExp(searchText,
+                                                                  "g"),
+                                                       replaceField.text) : textArea.text.replace(
+                                                       new RegExp(searchText,
+                                                                  "gi"),
+                                                       replaceField.text)
         }
     }
 
