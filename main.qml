@@ -151,10 +151,10 @@ ApplicationWindow {
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
         if (searchText !== "" && (searchText === selText || findNext())) {
-            textArea.text = textArea.text.substring(
-                        0,
-                        textArea.selectionStart) + replaceField.text + textArea.text.substring(
-                        textArea.selectionEnd)
+            textFileOperations.allowUndoAfterReplace(textArea.textDocument)
+            textArea.remove(textArea.selectionStart, textArea.selectionEnd)
+            textArea.insert(textArea.selectionStart, replaceField.text)
+            textFileOperations.allowUndoAfterReplace(textArea.textDocument)
             findNext()
         }
     }
@@ -165,13 +165,19 @@ ApplicationWindow {
         let selText = searchItem.matchCase ? textArea.selectedText : textArea.selectedText.toLowerCase()
 
         if (searchText !== "" && (searchText === selText || findNext(false))) {
-            textArea.text = searchItem.matchCase ? textArea.text.replace(
-                                                       new RegExp(searchText,
-                                                                  "g"),
-                                                       replaceField.text) : textArea.text.replace(
-                                                       new RegExp(searchText,
-                                                                  "gi"),
-                                                       replaceField.text)
+            textFileOperations.allowUndoAfterReplace(textArea.textDocument)
+            let newText = searchItem.matchCase ? textArea.text.replace(
+                                                     new RegExp(searchText,
+                                                                "g"),
+                                                     replaceField.text) : textArea.text.replace(
+                                                     new RegExp(searchText,
+                                                                "gi"),
+                                                     replaceField.text)
+            let cursorPosition = textArea.cursorPosition
+            textArea.clear()
+            textArea.append(newText)
+            textArea.cursorPosition = cursorPosition
+            textFileOperations.allowUndoAfterReplace(textArea.textDocument)
         }
     }
 

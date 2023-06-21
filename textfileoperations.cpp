@@ -3,6 +3,7 @@
 
 TextFileOperations::TextFileOperations(QObject *parent)
     : QObject{parent}
+    , m_TextCursor(nullptr)
 {}
 
 QString TextFileOperations::readFile(const QUrl &filePath)
@@ -54,4 +55,17 @@ QString TextFileOperations::spacesBetweenTexts(QString firstText,
         str += ' ';
 
     return str;
+}
+
+void TextFileOperations::allowUndoAfterReplace(QQuickTextDocument *qDoc)
+{
+    QTextDocument *textDocument = qDoc->textDocument();
+    if (!m_TextCursor) {
+        m_TextCursor = new QTextCursor(textDocument);
+        m_TextCursor->beginEditBlock();
+    } else {
+        m_TextCursor->endEditBlock();
+        delete m_TextCursor;
+        m_TextCursor = nullptr;
+    }
 }

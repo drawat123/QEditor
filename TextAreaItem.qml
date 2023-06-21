@@ -21,7 +21,8 @@ Item {
                 border.width: 0
             }
             onTextChanged: {
-                if (filePath.toString().length == 0) {
+                if (filePath.toString().length == 0 && getTabItem(
+                            tabBar.currentIndex).text.length < 20) {
                     let str = text.split('\n')[0].slice(0, 20)
                     if (str.length === 0)
                         str = "Untitled"
